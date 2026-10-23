@@ -1,6 +1,13 @@
 /* ================= EDIT YOUR TEXT HERE ================= */
 const CONFIG = {
   countdownSeconds: 5,
+  finaleDelaySeconds: 5,                  // wait after the cheque before the finale starts
+  inaugImage: "images/placeholder.svg",   // put your image path here, e.g. "images/logo.png"
+  inaugText: "comfest officially inaugurated!",
+  holdSeconds: 2,                         // how long to press & hold the fingerprint scanner
+  scanLabel: "Press & hold to verify",
+  scanHolding: "Scanning...",
+  scanSuccess: "Verified",
   slotTotal: 10000,                       // number the slot machine lands on
   currency: "₹",
   amount: "10,000.00",

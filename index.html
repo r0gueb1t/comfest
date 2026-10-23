@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>First transaction</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Caveat:wght@600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/style.css?v=9">
 </head>
 <body>
 <main id="stage">
@@ -15,6 +15,11 @@
   </section>
   <div id="vaultWrap">
     <div id="slot" aria-label="Vault total"></div>
+    <div id="scan" role="button" tabindex="0" aria-label="Press and hold the fingerprint scanner">
+      <div class="pad"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="46"/><circle class="prog" cx="50" cy="50" r="46"/>
+        <g class="fp"><path d="M44 64V52a6 6 0 0 1 12 0v8"/><path d="M38 68V52a12 12 0 0 1 24 0v12"/><path d="M32 68V52a18 18 0 0 1 36 0v6"/><path d="M26 62V52a24 24 0 0 1 48 0v8" stroke-dasharray="40 6"/><path d="M50 52v14"/></g></svg><i class="beam"></i></div>
+      <span id="scanLbl"></span>
+    </div>
     <div class="vault"><div class="inside"><div class="pile" id="pile"></div><div class="glow"></div></div><div class="door"><div class="wheel"></div></div></div>
     <div id="coins"></div>
   </div>
@@ -26,9 +31,19 @@
     <div class="row"><span><span class="lbl">Memo</span><span class="hand" id="c-memo"></span></span><span class="line hand" id="c-sign" style="max-width:55%;text-align:center"></span></div>
   </article>
   <div id="confetti"></div>
-  <button id="replay" type="button">Replay</button>
 </main>
-<script src="js/config.js?v=7"></script>
-<script src="js/main.js?v=7"></script>
+<section id="finale" aria-live="polite">
+  <div id="ribbon"><div class="half l"></div><div class="half r"></div></div>
+  <svg id="scissors" viewBox="0 0 90 60" aria-hidden="true">
+    <g><g class="bl"><path d="M40 30L88 23V28Z" fill="#dfe6e8"/><path d="M40 30L22 17" stroke="#dfe6e8" stroke-width="4" stroke-linecap="round"/><circle cx="14" cy="11" r="9" fill="none" stroke="#e0b04a" stroke-width="4"/></g></g>
+    <g transform="translate(0,60) scale(1,-1)"><g class="bl"><path d="M40 30L88 23V28Z" fill="#c5cfd2"/><path d="M40 30L22 17" stroke="#c5cfd2" stroke-width="4" stroke-linecap="round"/><circle cx="14" cy="11" r="9" fill="none" stroke="#e0b04a" stroke-width="4"/></g></g>
+    <circle cx="40" cy="30" r="3.5" fill="#7c5a14"/>
+  </svg>
+  <figure id="inaug"><img id="inaugImg" alt=""><figcaption id="inaugText"></figcaption></figure>
+</section>
+<button id="replay" type="button">Replay</button>
+
+<script src="js/config.js?v=9"></script>
+<script src="js/main.js?v=9"></script>
 </body>
 </html>

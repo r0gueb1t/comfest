@@ -1,8 +1,10 @@
 const $ = id => document.getElementById(id);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+const PLACEHOLDER = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" rx="20" fill="#1b2e2b"/><circle cx="130" cy="110" r="30" fill="#e0b04a"/><path d="M40 250l110-90 70 55 60-45 80 80z" fill="#3b5a55"/><text x="200" y="285" fill="#f3ecd6" font-family="sans-serif" font-size="18" text-anchor="middle">Your image here</text></svg>');
 const stage = document.querySelector(".vault"), wrap = $("vaultWrap");
 
 function fillText(){
+  const im = $("inaugImg"); im.onerror = () => { im.onerror = null; im.src = PLACEHOLDER; }; im.src = CONFIG.inaugImage || PLACEHOLDER; $("inaugText").textContent = CONFIG.inaugText;
   const c = CONFIG.cheque;
   $("c-bank").textContent = c.bank; $("c-date").textContent = c.date;
   $("c-payee").textContent = c.payee; $("c-words").textContent = c.words;
@@ -12,11 +14,17 @@ function fillText(){
   m.append(CONFIG.message + " ", Object.assign(document.createElement("b"), {textContent: CONFIG.currency + CONFIG.amount}), " by " + CONFIG.sender);
 }
 function reset(){
+  wrap.style.transition = "none"; $("finale").style.transition = "none"; $("stage").style.transition = "none";
+  if($("scan")._cancel) $("scan")._cancel();
   ["count"].forEach(i => $(i).classList.remove("off"));
   stage.classList.remove("open","spin"); wrap.classList.remove("show","small");
   $("msg").className = ""; $("cheque").classList.remove("show"); $("replay").classList.remove("show");
   $("pile").innerHTML = ""; $("coins").innerHTML = ""; $("confetti").innerHTML = "";
   $("fg").style.transition = "none"; $("fg").style.strokeDashoffset = 0;
+  $("slot").classList.remove("show","done"); $("slot").innerHTML = ""; $("scan").classList.remove("show","holding","ok");
+  $("stage").classList.remove("gone"); $("finale").classList.remove("show"); $("inaug").classList.remove("show");
+  document.querySelectorAll("#finale .half,#scissors,#scissors .bl").forEach(e => e.getAnimations().forEach(a => a.cancel()));
+  void wrap.offsetWidth; wrap.style.transition = ""; $("finale").style.transition = ""; $("stage").style.transition = "";
 }
 function buildPile(){
   const pile = $("pile"); pile.innerHTML = "";
@@ -82,6 +90,48 @@ function confetti(){
     }
   }
 }
+function holdScan(){
+  return new Promise(res => {
+    const scan = $("scan"), lbl = $("scanLbl"), ms = (CONFIG.holdSeconds || 2)*1000; let t = null;
+    scan.style.setProperty("--hold", ms/1000 + "s"); scan.classList.remove("ok","holding"); lbl.textContent = CONFIG.scanLabel; scan.classList.add("show");
+    function start(){ if(t || scan.classList.contains("ok")) return; scan.classList.add("holding"); lbl.textContent = CONFIG.scanHolding; t = setTimeout(done, ms); }
+    function stop(){ if(!t) return; clearTimeout(t); t = null; scan.classList.remove("holding"); lbl.textContent = CONFIG.scanLabel; }
+    function done(){ t = null; scan.classList.remove("holding"); scan.classList.add("ok"); lbl.textContent = CONFIG.scanSuccess; unbind(); setTimeout(res, 700); }
+    function unbind(){ scan.onpointerdown = scan.onpointerup = scan.onpointercancel = scan.onpointerleave = scan.onkeydown = scan.onkeyup = scan.oncontextmenu = null; }
+    scan.onpointerdown = e => { e.preventDefault(); try{ scan.setPointerCapture(e.pointerId); }catch(_){} start(); };
+    scan.onpointerup = scan.onpointercancel = scan.onpointerleave = stop;
+    scan.onkeydown = e => { if(e.key === " " || e.key === "Enter"){ e.preventDefault(); if(!e.repeat) start(); } };
+    scan.onkeyup = stop; scan.oncontextmenu = e => e.preventDefault();
+    scan._cancel = () => { stop(); unbind(); };
+  });
+}
+const FLUSH_L = "polygon(0 0,100% 0,100% 50%,100% 100%,0 100%)", NOTCH_L = "polygon(0 0,100% 0,96% 50%,100% 100%,0 100%)";
+const FLUSH_R = "polygon(0 0,100% 0,100% 100%,0 100%,0 50%)", NOTCH_R = "polygon(0 0,100% 0,100% 100%,0 100%,4% 50%)";
+async function finale(id){
+  await sleep((CONFIG.finaleDelaySeconds ?? 5) * 1000); if(id !== run) return;
+  $("stage").classList.add("gone"); $("finale").classList.add("show"); await sleep(1900); if(id !== run) return;
+  const L = document.querySelector(".half.l"), R = document.querySelector(".half.r"), S = $("scissors"), blades = [...S.querySelectorAll(".bl")], W = innerWidth;
+  // ribbon slides in from both sides
+  const ent = {duration:1100, easing:"cubic-bezier(.2,.8,.2,1)", fill:"forwards"};
+  L.animate([{transform:"translateX(-100%)",opacity:1},{transform:"none",opacity:1}], ent);
+  R.animate([{transform:"translateX(100%)",opacity:1},{transform:"none",opacity:1}], ent);
+  await sleep(1600); if(id !== run) return;
+  // scissors snip their way to the middle
+  const snips = blades.map(b => b.animate([{transform:"rotate(0deg)"},{transform:"rotate(-16deg)"}], {duration:240, direction:"alternate", iterations:Infinity}));
+  S.animate([{transform:`translateX(${-110}px)`,opacity:1},{transform:`translateX(${W/2 - 54}px)`,opacity:1}], {duration:2200, easing:"ease-in-out", fill:"forwards"});
+  await sleep(2250); if(id !== run) return;
+  snips.forEach(a => a.cancel());
+  blades.forEach(b => b.animate([{transform:"rotate(-18deg)"},{transform:"rotate(0deg)"}], {duration:220, easing:"ease-in"}));
+  await sleep(200);
+  // the cut: both halves fall away
+  const cut = {duration:1400, easing:"cubic-bezier(.5,0,.9,.6)", fill:"forwards"};
+  L.animate([{transform:"none",opacity:1,clipPath:FLUSH_L},{transform:"translate(-6vw,6vh) rotate(-6deg)",opacity:1,clipPath:NOTCH_L,offset:.25},{transform:"translate(-40vw,75vh) rotate(-28deg)",opacity:0,clipPath:NOTCH_L}], cut);
+  R.animate([{transform:"none",opacity:1,clipPath:FLUSH_R},{transform:"translate(6vw,6vh) rotate(6deg)",opacity:1,clipPath:NOTCH_R,offset:.25},{transform:"translate(40vw,75vh) rotate(28deg)",opacity:0,clipPath:NOTCH_R}], cut);
+  S.animate([{opacity:1},{opacity:0}], {duration:600, delay:300, fill:"forwards"});
+  await sleep(1100); if(id !== run) return;
+  // reveal
+  $("inaug").classList.add("show"); await sleep(2800); $("replay").classList.add("show");
+}
 let run = 0;
 async function play(){
   const id = ++run; reset(); fillText(); await sleep(300);
@@ -98,13 +148,15 @@ async function play(){
   $("count").classList.add("off"); wrap.classList.add("show"); await sleep(900);
   stage.classList.add("spin"); await sleep(1500);
   stage.classList.add("open"); await sleep(1500);
+  await holdScan(); if(id !== run) return;
+  $("scan").classList.remove("show"); await sleep(350); $("slot").classList.add("show");
   buildPile(); buildSlot(); await pour();
   if(id !== run) return;
   // 3. message
   $("msg").classList.add("show"); await sleep(2200);
   // 4. cheque rises
   wrap.classList.add("small"); $("msg").classList.add("up"); $("cheque").classList.add("show"); setTimeout(confetti, 700);
-  await sleep(1500); $("replay").classList.add("show");
+  await sleep(1500); await finale(id);
 }
 $("replay").onclick = play;
 play();
