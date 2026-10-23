@@ -1,7 +1,7 @@
 /* ================= EDIT YOUR TEXT HERE ================= */
 const CONFIG = {
   countdownSeconds: 5,
-  finaleDelaySeconds: 5,                  // wait after the cheque before the finale starts
+  finaleDelaySeconds: 3,                  // wait after the cheque before the finale starts
   inaugImage: "images/placeholder.svg",   // put your image path here, e.g. "images/logo.png"
   inaugText: "comfest officially inaugurated!",
   holdSeconds: 2,                         // how long to press & hold the fingerprint scanner
@@ -11,7 +11,7 @@ const CONFIG = {
   slotTotal: 10000,                       // number the slot machine lands on
   currency: "₹",
   amount: "10,000.00",
-  sender: "Chief Guest",            // the "yyy" in the message
+  sender: "Sri. Stanly Joseph Pothen, Chairman, CPF",            // the "yyy" in the message
   message: "First transaction received!", // text before the amount
   cheque: {
     bank: "Josephites Bank Pvt Ltd",
