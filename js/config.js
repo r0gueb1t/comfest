@@ -2,7 +2,7 @@
 const CONFIG = {
   countdownSeconds: 5,
   finaleDelaySeconds: 3,                  // wait after the cheque before the finale starts
-  inaugImage: "images/placeholder.svg",   // put your image path here, e.g. "images/logo.png"
+  inaugImage: "images/comfest_crop.jpeg",   // put your image path here, e.g. "images/logo.png"
   inaugText: "comfest officially inaugurated!",
   holdSeconds: 2,                         // how long to press & hold the fingerprint scanner
   scanLabel: "Press & hold to verify",
