@@ -11,7 +11,7 @@ const CONFIG = {
   slotTotal: 10000,                       // number the slot machine lands on
   currency: "₹",
   amount: "10,000.00",
-  sender: "Sri. Stanly Joseph Pothen, Chairman, CPF",            // the "yyy" in the message
+  sender: "Sri. Stany Joseph Pothen, Chairman, CPF",            // the "yyy" in the message
   message: "First transaction received!", // text before the amount
   cheque: {
     bank: "Josephites Bank Pvt Ltd",
