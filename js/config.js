@@ -19,7 +19,7 @@ const CONFIG = {
     payee: "Commerce Batch",
     words: "Ten thousand only",
     memo: "Order #0001",
-    signature: "Stanly Joseph"
+    signature: "Stany Joseph"
   }
 };
 /* ======================================================== */
